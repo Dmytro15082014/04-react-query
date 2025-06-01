@@ -1,5 +1,14 @@
 import "./App.module.css";
+import SearchBar from "../SearchBar/SearchBar";
 
 export default function App() {
-  return <></>;
+  const handleSearch = (query: string) => {
+    console.log(query);
+  };
+
+  return (
+    <>
+      <SearchBar onSubmit={handleSearch} />
+    </>
+  );
 }
