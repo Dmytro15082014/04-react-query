@@ -1,36 +1,19 @@
 import styles from "./SearchBar.module.css";
 import toast, { Toaster } from "react-hot-toast";
-import { Formik, Form, Field, type FormikHelpers } from "formik";
-import * as Yup from "yup";
 
-interface SearchBarProp {
-  onSubmit: (text: string) => void;
+interface SearchBarProps {
+  onSubmit: (query: string) => void;
 }
 
-interface OrderFormValue {
-  query: string;
-}
-
-const initialValues: OrderFormValue = {
-  query: "",
-};
-const Schema = Yup.object().shape({
-  query: Yup.string().trim(),
-});
-
-export default function SearchBar({ onSubmit }: SearchBarProp) {
-  const handleSubmit = (
-    { query }: OrderFormValue,
-    actions: FormikHelpers<OrderFormValue>
-  ) => {
-    if (query.trim().length) {
-      onSubmit(query.trim());
+export default function SearchBar({ onSubmit }: SearchBarProps) {
+  const handleSubmit = (formData: FormData) => {
+    const value = formData.get("query") as string;
+    if (value.trim().length) {
+      onSubmit(value.trim());
     } else {
       toast.error("Please enter your search query.");
     }
-    actions.resetForm();
   };
-
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -42,25 +25,19 @@ export default function SearchBar({ onSubmit }: SearchBarProp) {
         >
           Powered by TMDB
         </a>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={Schema}
-        >
-          <Form className={styles.form}>
-            <Field
-              className={styles.input}
-              type="text"
-              name="query"
-              autoComplete="off"
-              placeholder="Search movies..."
-              autoFocus
-            />
-            <button className={styles.button} type="submit">
-              Search
-            </button>
-          </Form>
-        </Formik>
+        <form className={styles.form} action={handleSubmit}>
+          <input
+            className={styles.input}
+            type="text"
+            name="query"
+            autoComplete="off"
+            placeholder="Search movies..."
+            autoFocus
+          />
+          <button className={styles.button} type="submit">
+            Search
+          </button>
+        </form>
       </div>
       <Toaster />
     </header>
